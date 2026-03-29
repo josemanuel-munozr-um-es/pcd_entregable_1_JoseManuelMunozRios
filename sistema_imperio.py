@@ -12,6 +12,8 @@ class ClaseNave(Enum):
     SOBERANO = 3
 
 # CLASES BASE Y NAVES
+# Creamos una jerarquía de clases. UnidadCombate es la clase "Base".
+# De esta forma, evitamos repetir los atributos id_combate y clave_cifrada en todas las naves.
 class UnidadCombate:
     def __init__(self, id_combate, clave_cifrada):
         self.id_combate = id_combate
@@ -20,6 +22,7 @@ class UnidadCombate:
     def __str__(self):
         return f"[ID: {self.id_combate}]"
 
+# Nave hereda de UnidadCombate (Herencia simple)
 class Nave(UnidadCombate):
     def __init__(self, id_combate, clave_cifrada, nombre, catalogo_repuestos):
         super().__init__(id_combate, clave_cifrada)
@@ -29,6 +32,7 @@ class Nave(UnidadCombate):
     def __str__(self):
         return super().__str__() + f" Nave: {self.nombre}"
 
+# Las naves específicas heredan de Nave, especializando sus atributos
 class EstacionEspacial(Nave):
     def __init__(self, id_combate, clave_cifrada, nombre, catalogo_repuestos, tripulacion, pasaje, ubicacion):
         super().__init__(id_combate, clave_cifrada, nombre, catalogo_repuestos)
@@ -54,6 +58,8 @@ class Repuesto:
     def __init__(self, nombre, proveedor, cantidad, precio):
         self.nombre = nombre
         self.proveedor = proveedor
+        # Encapsulamiento: Hacemos la cantidad privada (__) para evitar que se modifique desde fuera sin control.
+        # Solo se puede acceder o modificar a través de los métodos get y set.
         self.__cantidad = cantidad
         self.precio = precio
 
@@ -62,6 +68,7 @@ class Repuesto:
 
     def set_cantidad(self, valor):
         if valor < 0:
+            # Lanzamos excepción si intenta poner un stock negativo
             raise ValueError("Error: La cantidad de repuestos no puede ser negativa.")
         self.__cantidad = valor
 
@@ -78,6 +85,8 @@ class Almacen:
         self.lista_repuestos.append(repuesto)
 
     def sacar_repuesto(self, nombre_repuesto, cantidad):
+        # Comprobamos las condiciones lógicas antes de operar.
+        # Errores específicos (ValueError, KeyError) si algo falla.
         for repuesto in self.lista_repuestos:
             if repuesto.nombre == nombre_repuesto:
                 if repuesto.get_cantidad() < cantidad:
